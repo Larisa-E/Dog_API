@@ -27,7 +27,7 @@ You can run this as a static site on GitHub Pages.
 3. Save, then wait for GitHub to publish.
 
 Your site will be available at:
-`https://<your-username>.github.io/Dog_API/`
+https://Larisa-E.github.io/Dog_API/
 
 Note: GitHub Pages does **not** run PHP. The app will still work because it automatically falls back to the public Dog API (`https://dog.ceo/...`) when the PHP proxy endpoints can't be used.
 
