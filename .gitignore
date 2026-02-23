@@ -1,0 +1,28 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Visual Studio / VS Code
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vscode/.history/
+
+# Build outputs (common)
+bin/
+obj/
+dist/
+
+# Dependencies (common)
+node_modules/
+vendor/
+
+# Secrets
+.env
+.env.*
+
+# Logs
+*.log
