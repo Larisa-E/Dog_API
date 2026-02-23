@@ -17,6 +17,20 @@ Includes search, sub-breeds, pagination, and error handling.
 1. Quick start (no install): open `index.html` directly in your browser or run the VS Code launch profile `Launch Dog API Gallery`.
 2. Optional PHP mode (for backend proxy): place the folder in a PHP server (XAMPP/WAMP/MAMP), start Apache, then open `http://localhost/dog-api-app/index.html`.
 
+## Run From GitHub (GitHub Pages)
+You can run this as a static site on GitHub Pages.
+
+1. On GitHub, go to your repo → **Settings** → **Pages**.
+2. Under **Build and deployment**:
+	- **Source**: Deploy from a branch
+	- **Branch**: `main` / **(root)**
+3. Save, then wait for GitHub to publish.
+
+Your site will be available at:
+`https://<your-username>.github.io/Dog_API/`
+
+Note: GitHub Pages does **not** run PHP. The app will still work because it automatically falls back to the public Dog API (`https://dog.ceo/...`) when the PHP proxy endpoints can't be used.
+
 ## Deployment (Web Server)
 1. Upload the folder to your web server.
 2. If using PHP proxy endpoints, make sure PHP is enabled.
