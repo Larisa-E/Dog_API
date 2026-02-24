@@ -184,6 +184,8 @@ function renderStatusWithSocialLink(breed, subBreed) {
 
   const combinedBreed = subBreed ? `${subBreed}${breed}` : `${breed}`;
   const tag = `${toInstagramHashtag(combinedBreed)}puppiesforsale`;
+  const dkBreedTag = `${toInstagramHashtag(combinedBreed)}danmark`;
+  const dkGeneralTag = "hvalpetilsalg";
 
   const link = document.createElement("a");
   link.href = `https://www.instagram.com/explore/tags/${tag}/`;
@@ -192,8 +194,38 @@ function renderStatusWithSocialLink(breed, subBreed) {
   link.className = "ms-2";
   link.textContent = `Instagram: #${tag}`;
 
+  const dkIgLink = document.createElement("a");
+  dkIgLink.href = `https://www.instagram.com/explore/tags/${dkBreedTag}/`;
+  dkIgLink.target = "_blank";
+  dkIgLink.rel = "noopener noreferrer";
+  dkIgLink.className = "ms-2";
+  dkIgLink.textContent = `IG DK: #${dkBreedTag}`;
+
+  const dkIgGeneralLink = document.createElement("a");
+  dkIgGeneralLink.href = `https://www.instagram.com/explore/tags/${dkGeneralTag}/`;
+  dkIgGeneralLink.target = "_blank";
+  dkIgGeneralLink.rel = "noopener noreferrer";
+  dkIgGeneralLink.className = "ms-2";
+  dkIgGeneralLink.textContent = `IG DK: #${dkGeneralTag}`;
+
+  const dkQueryParts = [
+    subBreed ? `${breed} ${subBreed}` : breed,
+    "hvalp til salg",
+    "Danmark",
+  ];
+  const dkQuery = dkQueryParts.filter(Boolean).join(" ");
+  const dkLink = document.createElement("a");
+  dkLink.href = `https://www.google.com/search?q=${encodeURIComponent(dkQuery)}&hl=da&gl=DK`;
+  dkLink.target = "_blank";
+  dkLink.rel = "noopener noreferrer";
+  dkLink.className = "ms-2";
+  dkLink.textContent = "Denmark: Google search";
+
   statusBox.appendChild(statusText);
   statusBox.appendChild(link);
+  statusBox.appendChild(dkIgLink);
+  statusBox.appendChild(dkIgGeneralLink);
+  statusBox.appendChild(dkLink);
 }
 
 function renderImages() {
