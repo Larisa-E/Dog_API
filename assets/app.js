@@ -9,6 +9,7 @@ const bgCollage = document.getElementById("bgCollage");
 const imageModal = document.getElementById("imageModal");
 const modalImage = document.getElementById("modalImage");
 const modalClose = document.getElementById("modalClose");
+const modalDownload = document.getElementById("modalDownload");
 
 let breedMap = {};
 let allBreedNames = [];
@@ -258,6 +259,56 @@ function closeImageModal() {
   imageModal.classList.add("d-none");
   document.body.style.overflow = "";
   imageModal.setAttribute("aria-hidden", "true");
+}
+
+function getDownloadFilename(imageUrl) {
+  try {
+    const parsed = new URL(imageUrl);
+    const last = parsed.pathname.split("/").filter(Boolean).pop() || "dog.jpg";
+    const clean = last.split("?")[0].split("#")[0];
+    return clean.includes(".") ? clean : `${clean}.jpg`;
+  } catch {
+    return "dog.jpg";
+  }
+}
+
+async function downloadImage(imageUrl) {
+  if (!imageUrl) return;
+
+  const originalText = modalDownload?.textContent;
+  if (modalDownload) {
+    modalDownload.disabled = true;
+    modalDownload.textContent = "Downloading...";
+  }
+
+  try {
+    const response = await fetch(imageUrl, { mode: "cors" });
+    if (!response.ok) {
+      throw new Error("Download fetch failed");
+    }
+
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = objectUrl;
+    a.download = getDownloadFilename(imageUrl);
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(objectUrl);
+  } catch {
+    // Fallback when CORS blocks fetch: open image so user can save it manually.
+    window.open(imageUrl, "_blank", "noopener,noreferrer");
+  } finally {
+    if (modalDownload) {
+      modalDownload.disabled = false;
+      modalDownload.textContent = originalText || "Download";
+    }
+  }
+}
+
+if (modalDownload) {
+  modalDownload.addEventListener("click", () => downloadImage(modalImage.src));
 }
 
 modalClose.addEventListener("click", closeImageModal);

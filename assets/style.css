@@ -126,6 +126,19 @@ body {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
 
+.image-modal__download {
+  position: absolute;
+  top: 10px;
+  right: 54px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.image-modal__download:hover {
+  background: #ffffff;
+}
+
 .image-modal__close:hover {
   background: #ffffff;
 }
