@@ -157,9 +157,8 @@ async function loadImagesForSelection() {
     if (data.status === "success") {
       currentImages = data.message;
       showSpinner(false);
-      statusBox.textContent = subBreed
-        ? `Showing images for: ${breed}/${subBreed}`
-        : `Showing images for: ${breed}`;
+
+      renderStatusWithSocialLink(breed, subBreed);
       renderImages();
     } else {
       showError("No images found.");
@@ -167,6 +166,34 @@ async function loadImagesForSelection() {
   } catch (error) {
     showError("Error loading images.");
   }
+}
+
+function toInstagramHashtag(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function renderStatusWithSocialLink(breed, subBreed) {
+  statusBox.innerHTML = "";
+
+  const statusText = document.createElement("span");
+  statusText.textContent = subBreed
+    ? `Showing images for: ${breed}/${subBreed}`
+    : `Showing images for: ${breed}`;
+
+  const combinedBreed = subBreed ? `${subBreed}${breed}` : `${breed}`;
+  const tag = `${toInstagramHashtag(combinedBreed)}puppiesforsale`;
+
+  const link = document.createElement("a");
+  link.href = `https://www.instagram.com/explore/tags/${tag}/`;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.className = "ms-2";
+  link.textContent = `Instagram: #${tag}`;
+
+  statusBox.appendChild(statusText);
+  statusBox.appendChild(link);
 }
 
 function renderImages() {
