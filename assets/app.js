@@ -254,10 +254,10 @@ function openImageModal(url) {
     const filename = getDownloadFilename(url);
     modalDownload.href = url;
     modalDownload.setAttribute("download", filename);
-    // For cross-origin images, browsers may ignore `download`.
-    // Targeting a new tab still lets users save the image.
-    modalDownload.setAttribute("target", "_blank");
-    modalDownload.setAttribute("rel", "noopener noreferrer");
+    // We'll intercept clicks and attempt a blob download. Keeping this link
+    // also allows default browser behavior as a fallback.
+    modalDownload.removeAttribute("target");
+    modalDownload.removeAttribute("rel");
   }
 
   imageModal.classList.remove("d-none");
@@ -289,6 +289,49 @@ function getDownloadFilename(imageUrl) {
   } catch {
     return "dog.jpg";
   }
+}
+
+async function tryBlobDownload(imageUrl) {
+  const response = await fetch(imageUrl, { mode: "cors" });
+  if (!response.ok) {
+    throw new Error("Download fetch failed");
+  }
+
+  const blob = await response.blob();
+  const objectUrl = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = objectUrl;
+  a.download = getDownloadFilename(imageUrl);
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(objectUrl);
+}
+
+if (modalDownload) {
+  modalDownload.addEventListener("click", async (event) => {
+    event.preventDefault();
+
+    const imageUrl = modalImage.src;
+    if (!imageUrl) return;
+
+    const originalText = modalDownload.textContent;
+    modalDownload.classList.add("disabled");
+    modalDownload.setAttribute("aria-disabled", "true");
+    modalDownload.textContent = "Downloading...";
+
+    try {
+      await tryBlobDownload(imageUrl);
+    } catch {
+      // If CORS blocks blob download, fall back to opening the image so the
+      // user can use the browser's Save Image action.
+      window.open(imageUrl, "_blank", "noopener,noreferrer");
+    } finally {
+      modalDownload.classList.remove("disabled");
+      modalDownload.removeAttribute("aria-disabled");
+      modalDownload.textContent = originalText;
+    }
+  });
 }
 
 modalClose.addEventListener("click", closeImageModal);
