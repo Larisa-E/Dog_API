@@ -76,6 +76,11 @@ body {
   color: #6d4acb;
 }
 
+#status a {
+  color: inherit;
+  text-decoration: underline;
+}
+
 #gallery img {
   width: 100%;
   height: 220px;
