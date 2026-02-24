@@ -249,6 +249,17 @@ gallery.addEventListener("click", (event) => {
 
 function openImageModal(url) {
   modalImage.src = url;
+
+  if (modalDownload) {
+    const filename = getDownloadFilename(url);
+    modalDownload.href = url;
+    modalDownload.setAttribute("download", filename);
+    // For cross-origin images, browsers may ignore `download`.
+    // Targeting a new tab still lets users save the image.
+    modalDownload.setAttribute("target", "_blank");
+    modalDownload.setAttribute("rel", "noopener noreferrer");
+  }
+
   imageModal.classList.remove("d-none");
   document.body.style.overflow = "hidden";
   imageModal.setAttribute("aria-hidden", "false");
@@ -256,6 +267,14 @@ function openImageModal(url) {
 
 function closeImageModal() {
   modalImage.src = "";
+
+  if (modalDownload) {
+    modalDownload.href = "#";
+    modalDownload.removeAttribute("download");
+    modalDownload.removeAttribute("target");
+    modalDownload.removeAttribute("rel");
+  }
+
   imageModal.classList.add("d-none");
   document.body.style.overflow = "";
   imageModal.setAttribute("aria-hidden", "true");
@@ -270,45 +289,6 @@ function getDownloadFilename(imageUrl) {
   } catch {
     return "dog.jpg";
   }
-}
-
-async function downloadImage(imageUrl) {
-  if (!imageUrl) return;
-
-  const originalText = modalDownload?.textContent;
-  if (modalDownload) {
-    modalDownload.disabled = true;
-    modalDownload.textContent = "Downloading...";
-  }
-
-  try {
-    const response = await fetch(imageUrl, { mode: "cors" });
-    if (!response.ok) {
-      throw new Error("Download fetch failed");
-    }
-
-    const blob = await response.blob();
-    const objectUrl = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = objectUrl;
-    a.download = getDownloadFilename(imageUrl);
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(objectUrl);
-  } catch {
-    // Fallback when CORS blocks fetch: open image so user can save it manually.
-    window.open(imageUrl, "_blank", "noopener,noreferrer");
-  } finally {
-    if (modalDownload) {
-      modalDownload.disabled = false;
-      modalDownload.textContent = originalText || "Download";
-    }
-  }
-}
-
-if (modalDownload) {
-  modalDownload.addEventListener("click", () => downloadImage(modalImage.src));
 }
 
 modalClose.addEventListener("click", closeImageModal);
