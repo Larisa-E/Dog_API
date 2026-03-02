@@ -30,14 +30,14 @@ body {
   border-radius: 16px;
   background-size: cover;
   background-position: center;
-  opacity: 0.45;
-  filter: saturate(1.1) contrast(1.08) blur(0.2px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+  opacity: 0.72;
+  filter: saturate(1.22) contrast(1.18) blur(0);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.26);
   transition: transform 14s ease;
 }
 
 .bg-collage__item:nth-child(odd) {
-  opacity: 0.34;
+  opacity: 0.58;
 }
 
 .container {
