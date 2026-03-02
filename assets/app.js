@@ -102,7 +102,7 @@ function renderSubBreedOptions(breed) {
 }
 
 function applyBreedFilter() {
-  // Centralized breed filtering so search behavior stays consistent.
+  // search breed
   const query = breedSearch.value.trim().toLowerCase();
   const filtered = query
     ? allBreedNames.filter((breedName) => breedName.toLowerCase().includes(query))
@@ -112,14 +112,13 @@ function applyBreedFilter() {
 }
 
 breedSearch.addEventListener("input", () => {
-  // Live filter over breed names while user types.
+  // real-time search
   applyBreedFilter();
   resetSubBreedOptions();
   clearGalleryState();
 });
 
 function clearGalleryState() {
-  // Reset visual/results state before new search or selection.
   gallery.innerHTML = "";
   statusBox.textContent = "";
   currentImages = [];
@@ -128,7 +127,7 @@ function clearGalleryState() {
 }
 
 breedSelect.addEventListener("change", async (e) => {
-  // When breed changes: clear old content, load sub-breeds, fetch new images.
+  // when breed changes: clear old content, load sub-breeds, fetch new images
   const breed = e.target.value;
   clearGalleryState();
 
@@ -144,7 +143,6 @@ breedSelect.addEventListener("change", async (e) => {
 subBreedSelect.addEventListener("change", loadImagesForSelection);
 
 async function loadImagesForSelection() {
-  // Main image loader based on current breed + optional sub-breed.
   const breed = breedSelect.value;
   const subBreed = subBreedSelect.value;
 
@@ -193,7 +191,7 @@ function toInstagramHashtag(value) {
 }
 
 function renderStatusWithSocialLink(breed, subBreed) {
-  // Build result label and quick external links related to selected breed.
+  // build result label and external links related to selected breed
   statusBox.innerHTML = "";
 
   const statusText = document.createElement("span");
@@ -262,7 +260,7 @@ function renderStatusWithSocialLink(breed, subBreed) {
 }
 
 function renderImages() {
-  // Render next page of images (pagination using visibleCount + pageSize).
+  // render next page of images
   const nextImages = currentImages.slice(visibleCount, visibleCount + pageSize);
   nextImages.forEach((url) => {
     const col = document.createElement("div");
@@ -287,9 +285,8 @@ function renderImages() {
 
 loadMoreBtn.addEventListener("click", renderImages);
 
-// Background collage helpers
+// background
 async function loadBackgroundCollage() {
-  // Decorative-only: load random images for the background layer.
   if (!bgCollage) return;
   try {
     const response = await fetch("https://dog.ceo/api/breeds/image/random/12");
@@ -298,12 +295,11 @@ async function loadBackgroundCollage() {
       renderCollage(data.message);
     }
   } catch (err) {
-    // background is decorative; ignore failures
   }
 }
 
 function renderCollage(urls) {
-  // Place random collage tiles around screen for visual style.
+  // random collage tiles around screen for visual style
   const fragment = document.createDocumentFragment();
   const positions = generateCollagePositions(urls.length);
 
@@ -336,7 +332,7 @@ function generateCollagePositions(count) {
 }
 
 gallery.addEventListener("click", (event) => {
-  // Open clicked gallery image in full-size modal.
+  // open clicked image in full-size modal
   const target = event.target;
   if (target.tagName === "IMG" && target.src) {
     openImageModal(target.src);
@@ -344,15 +340,13 @@ gallery.addEventListener("click", (event) => {
 });
 
 function openImageModal(url) {
-  // Show modal and prepare download link for selected image.
+  // prepare download link for selected image
   modalImage.src = url;
 
   if (modalDownload) {
     const filename = getDownloadFilename(url);
     modalDownload.href = url;
     modalDownload.setAttribute("download", filename);
-    // We'll intercept clicks and attempt a blob download. Keeping this link
-    // also allows default browser behavior as a fallback.
     modalDownload.removeAttribute("target");
     modalDownload.removeAttribute("rel");
   }
@@ -362,8 +356,7 @@ function openImageModal(url) {
   imageModal.setAttribute("aria-hidden", "false");
 }
 
-function closeImageModal() {
-  // Hide modal and reset modal-specific state.
+function closeImageModal() { 
   modalImage.src = "";
 
   if (modalDownload) {
@@ -379,7 +372,7 @@ function closeImageModal() {
 }
 
 function getDownloadFilename(imageUrl) {
-  // Create a safe filename from image URL.
+  // create a safe filename from image URL
   try {
     const parsed = new URL(imageUrl);
     const last = parsed.pathname.split("/").filter(Boolean).pop() || "dog.jpg";
@@ -390,8 +383,7 @@ function getDownloadFilename(imageUrl) {
   }
 }
 
-async function tryBlobDownload(imageUrl) {
-  // Attempt direct download by fetching blob and triggering anchor download.
+async function tryBlobDownload(imageUrl) { 
   const response = await fetch(imageUrl, { mode: "cors" });
   if (!response.ok) {
     throw new Error("Download fetch failed");
@@ -410,7 +402,6 @@ async function tryBlobDownload(imageUrl) {
 
 if (modalDownload) {
   modalDownload.addEventListener("click", async (event) => {
-    // Download button with graceful fallback if CORS blocks blob download.
     event.preventDefault();
 
     const imageUrl = modalImage.src;
@@ -424,8 +415,6 @@ if (modalDownload) {
     try {
       await tryBlobDownload(imageUrl);
     } catch {
-      // If CORS blocks blob download, fall back to opening the image so the
-      // user can use the browser's Save Image action.
       window.open(imageUrl, "_blank", "noopener,noreferrer");
     } finally {
       modalDownload.classList.remove("disabled");
@@ -438,26 +427,24 @@ if (modalDownload) {
 modalClose.addEventListener("click", closeImageModal);
 
 imageModal.addEventListener("click", (event) => {
-  // Close modal when clicking backdrop area (outside image content).
+  // close image when clicking outside that image
   if (event.target === imageModal) {
     closeImageModal();
   }
 });
 
 window.addEventListener("keydown", (event) => {
-  // Keyboard shortcut: close modal with Escape.
+  // close modal with Escape
   if (event.key === "Escape" && !imageModal.classList.contains("d-none")) {
     closeImageModal();
   }
 });
 
 function showSpinner(show) {
-  // Utility: show or hide loading spinner.
   spinner.classList.toggle("d-none", !show);
 }
 
 function showError(message) {
-  // Utility: stop loading and display error text.
   showSpinner(false);
   statusBox.textContent = message;
 }
