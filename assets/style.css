@@ -42,7 +42,7 @@ body {
 .app-title {
   font-family: "Baloo 2", cursive;
   font-weight: 800;
-  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-size: clamp(1.6rem, 3.6vw, 2.6rem);
   color: #ff8fc1;
   text-shadow: 0 2px 0 #ffffff, 0 6px 14px rgba(255, 143, 193, 0.34);
 }
@@ -51,7 +51,11 @@ body {
   max-width: 840px;
   margin: 0 auto;
   color: #4b3c6f;
-  line-height: 1.6;
+  font-family: "Baloo 2", cursive;
+  font-weight: 600;
+  font-size: clamp(1rem, 1.35vw, 1.3rem);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
@@ -72,13 +76,36 @@ body {
 }
 
 #status {
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
   color: #6d4acb;
 }
 
-#status a {
-  color: inherit;
+#status .status-label {
+  font-weight: 800;
+  color: #6247c6;
+}
+
+#status .status-links {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+#status .status-link {
+  color: #6d4acb;
+  font-weight: 600;
+  text-decoration: none;
+  opacity: 0.92;
+}
+
+#status .status-link:hover {
   text-decoration: underline;
+  opacity: 1;
 }
 
 #gallery img {

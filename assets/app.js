@@ -11,19 +11,21 @@ const modalImage = document.getElementById("modalImage");
 const modalClose = document.getElementById("modalClose");
 const modalDownload = document.getElementById("modalDownload");
 
+// available breeds, loaded images, and pagination settings
 let breedMap = {};
 let allBreedNames = [];
 let currentImages = [];
 let visibleCount = 0;
 const pageSize = 12;
 
-// Load breeds and decorative collage on page load
+// load breeds and background
 window.addEventListener("DOMContentLoaded", () => {
   loadBreeds();
   loadBackgroundCollage();
 });
 
 async function fetchJsonWithFallback(primaryUrl, fallbackUrl) {
+  // try local/proxy endpoint first. If it fails, use direct Dog API
   try {
     const response = await fetch(primaryUrl);
     if (!response.ok) {
@@ -40,6 +42,7 @@ async function fetchJsonWithFallback(primaryUrl, fallbackUrl) {
 }
 
 async function loadBreeds() {
+  // load breed list 
   showSpinner(true);
   statusBox.textContent = "";
   try {
@@ -51,7 +54,7 @@ async function loadBreeds() {
     if (data.status === "success") {
       breedMap = data.message;
       allBreedNames = Object.keys(breedMap).sort();
-      renderBreedOptions(allBreedNames);
+      applyBreedFilter();
       resetSubBreedOptions();
       showSpinner(false);
     } else {
@@ -63,6 +66,7 @@ async function loadBreeds() {
 }
 
 function renderBreedOptions(breeds) {
+  // breed dropdown list
   breedSelect.innerHTML = `<option value="">-- Select breed --</option>`;
   breeds.forEach((breed) => {
     const option = document.createElement("option");
@@ -73,11 +77,13 @@ function renderBreedOptions(breeds) {
 }
 
 function resetSubBreedOptions() {
+  // no sub-breed selected and disabled until breed is chosen
   subBreedSelect.innerHTML = `<option value="">-- Select sub-breed (optional) --</option>`;
   subBreedSelect.disabled = true;
 }
 
 function renderSubBreedOptions(breed) {
+  // if breed has sub-breeds, enable and fill the second dropdown
   resetSubBreedOptions();
 
   const subBreeds = breedMap[breed] || [];
@@ -95,15 +101,25 @@ function renderSubBreedOptions(breed) {
   subBreedSelect.disabled = false;
 }
 
-breedSearch.addEventListener("input", () => {
-  const query = breedSearch.value.toLowerCase();
-  const filtered = allBreedNames.filter((b) => b.includes(query));
+function applyBreedFilter() {
+  // Centralized breed filtering so search behavior stays consistent.
+  const query = breedSearch.value.trim().toLowerCase();
+  const filtered = query
+    ? allBreedNames.filter((breedName) => breedName.toLowerCase().includes(query))
+    : allBreedNames;
+
   renderBreedOptions(filtered);
+}
+
+breedSearch.addEventListener("input", () => {
+  // Live filter over breed names while user types.
+  applyBreedFilter();
   resetSubBreedOptions();
   clearGalleryState();
 });
 
 function clearGalleryState() {
+  // Reset visual/results state before new search or selection.
   gallery.innerHTML = "";
   statusBox.textContent = "";
   currentImages = [];
@@ -112,6 +128,7 @@ function clearGalleryState() {
 }
 
 breedSelect.addEventListener("change", async (e) => {
+  // When breed changes: clear old content, load sub-breeds, fetch new images.
   const breed = e.target.value;
   clearGalleryState();
 
@@ -127,6 +144,7 @@ breedSelect.addEventListener("change", async (e) => {
 subBreedSelect.addEventListener("change", loadImagesForSelection);
 
 async function loadImagesForSelection() {
+  // Main image loader based on current breed + optional sub-breed.
   const breed = breedSelect.value;
   const subBreed = subBreedSelect.value;
 
@@ -175,38 +193,51 @@ function toInstagramHashtag(value) {
 }
 
 function renderStatusWithSocialLink(breed, subBreed) {
+  // Build result label and quick external links related to selected breed.
   statusBox.innerHTML = "";
 
   const statusText = document.createElement("span");
+  statusText.className = "status-label";
   statusText.textContent = subBreed
-    ? `Showing images for: ${breed}/${subBreed}`
-    : `Showing images for: ${breed}`;
+    ? `Results: ${breed} / ${subBreed}`
+    : `Results: ${breed}`;
+
+  const statusLinks = document.createElement("span");
+  statusLinks.className = "status-links";
 
   const combinedBreed = subBreed ? `${subBreed}${breed}` : `${breed}`;
   const tag = `${toInstagramHashtag(combinedBreed)}puppiesforsale`;
   const dkBreedTag = `${toInstagramHashtag(combinedBreed)}danmark`;
+  const dkSaleTag = `${toInstagramHashtag(combinedBreed)}salg`;
   const dkGeneralTag = "hvalpetilsalg";
 
   const link = document.createElement("a");
   link.href = `https://www.instagram.com/explore/tags/${tag}/`;
   link.target = "_blank";
   link.rel = "noopener noreferrer";
-  link.className = "ms-2";
+  link.className = "status-link";
   link.textContent = `Instagram: #${tag}`;
 
   const dkIgLink = document.createElement("a");
   dkIgLink.href = `https://www.instagram.com/explore/tags/${dkBreedTag}/`;
   dkIgLink.target = "_blank";
   dkIgLink.rel = "noopener noreferrer";
-  dkIgLink.className = "ms-2";
+  dkIgLink.className = "status-link";
   dkIgLink.textContent = `IG DK: #${dkBreedTag}`;
 
   const dkIgGeneralLink = document.createElement("a");
   dkIgGeneralLink.href = `https://www.instagram.com/explore/tags/${dkGeneralTag}/`;
   dkIgGeneralLink.target = "_blank";
   dkIgGeneralLink.rel = "noopener noreferrer";
-  dkIgGeneralLink.className = "ms-2";
+  dkIgGeneralLink.className = "status-link";
   dkIgGeneralLink.textContent = `IG DK: #${dkGeneralTag}`;
+
+  const dkIgSaleLink = document.createElement("a");
+  dkIgSaleLink.href = `https://www.instagram.com/explore/tags/${dkSaleTag}/`;
+  dkIgSaleLink.target = "_blank";
+  dkIgSaleLink.rel = "noopener noreferrer";
+  dkIgSaleLink.className = "status-link";
+  dkIgSaleLink.textContent = `IG DK: #${dkSaleTag}`;
 
   const dkQueryParts = [
     subBreed ? `${breed} ${subBreed}` : breed,
@@ -218,17 +249,20 @@ function renderStatusWithSocialLink(breed, subBreed) {
   dkLink.href = `https://www.google.com/search?q=${encodeURIComponent(dkQuery)}&hl=da&gl=DK`;
   dkLink.target = "_blank";
   dkLink.rel = "noopener noreferrer";
-  dkLink.className = "ms-2";
+  dkLink.className = "status-link";
   dkLink.textContent = "Denmark: Google search";
 
   statusBox.appendChild(statusText);
-  statusBox.appendChild(link);
-  statusBox.appendChild(dkIgLink);
-  statusBox.appendChild(dkIgGeneralLink);
-  statusBox.appendChild(dkLink);
+  statusLinks.appendChild(link);
+  statusLinks.appendChild(dkIgLink);
+  statusLinks.appendChild(dkIgSaleLink);
+  statusLinks.appendChild(dkIgGeneralLink);
+  statusLinks.appendChild(dkLink);
+  statusBox.appendChild(statusLinks);
 }
 
 function renderImages() {
+  // Render next page of images (pagination using visibleCount + pageSize).
   const nextImages = currentImages.slice(visibleCount, visibleCount + pageSize);
   nextImages.forEach((url) => {
     const col = document.createElement("div");
@@ -255,6 +289,7 @@ loadMoreBtn.addEventListener("click", renderImages);
 
 // Background collage helpers
 async function loadBackgroundCollage() {
+  // Decorative-only: load random images for the background layer.
   if (!bgCollage) return;
   try {
     const response = await fetch("https://dog.ceo/api/breeds/image/random/12");
@@ -268,6 +303,7 @@ async function loadBackgroundCollage() {
 }
 
 function renderCollage(urls) {
+  // Place random collage tiles around screen for visual style.
   const fragment = document.createDocumentFragment();
   const positions = generateCollagePositions(urls.length);
 
@@ -300,6 +336,7 @@ function generateCollagePositions(count) {
 }
 
 gallery.addEventListener("click", (event) => {
+  // Open clicked gallery image in full-size modal.
   const target = event.target;
   if (target.tagName === "IMG" && target.src) {
     openImageModal(target.src);
@@ -307,6 +344,7 @@ gallery.addEventListener("click", (event) => {
 });
 
 function openImageModal(url) {
+  // Show modal and prepare download link for selected image.
   modalImage.src = url;
 
   if (modalDownload) {
@@ -325,6 +363,7 @@ function openImageModal(url) {
 }
 
 function closeImageModal() {
+  // Hide modal and reset modal-specific state.
   modalImage.src = "";
 
   if (modalDownload) {
@@ -340,6 +379,7 @@ function closeImageModal() {
 }
 
 function getDownloadFilename(imageUrl) {
+  // Create a safe filename from image URL.
   try {
     const parsed = new URL(imageUrl);
     const last = parsed.pathname.split("/").filter(Boolean).pop() || "dog.jpg";
@@ -351,6 +391,7 @@ function getDownloadFilename(imageUrl) {
 }
 
 async function tryBlobDownload(imageUrl) {
+  // Attempt direct download by fetching blob and triggering anchor download.
   const response = await fetch(imageUrl, { mode: "cors" });
   if (!response.ok) {
     throw new Error("Download fetch failed");
@@ -369,6 +410,7 @@ async function tryBlobDownload(imageUrl) {
 
 if (modalDownload) {
   modalDownload.addEventListener("click", async (event) => {
+    // Download button with graceful fallback if CORS blocks blob download.
     event.preventDefault();
 
     const imageUrl = modalImage.src;
@@ -396,22 +438,26 @@ if (modalDownload) {
 modalClose.addEventListener("click", closeImageModal);
 
 imageModal.addEventListener("click", (event) => {
+  // Close modal when clicking backdrop area (outside image content).
   if (event.target === imageModal) {
     closeImageModal();
   }
 });
 
 window.addEventListener("keydown", (event) => {
+  // Keyboard shortcut: close modal with Escape.
   if (event.key === "Escape" && !imageModal.classList.contains("d-none")) {
     closeImageModal();
   }
 });
 
 function showSpinner(show) {
+  // Utility: show or hide loading spinner.
   spinner.classList.toggle("d-none", !show);
 }
 
 function showError(message) {
+  // Utility: stop loading and display error text.
   showSpinner(false);
   statusBox.textContent = message;
 }
