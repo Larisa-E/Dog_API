@@ -59,7 +59,7 @@
 
     <div id="gallery" class="row g-3"></div>
 
-    <!-- full-size when user clicks an image) -->
+    <!-- Full-size modal opens when user clicks an image -->
     <div id="imageModal" class="image-modal d-none" aria-hidden="true">
       <div class="image-modal__content">
         <button id="modalClose" class="btn-close image-modal__close" aria-label="Close"></button>
@@ -74,8 +74,10 @@
     </div>
   </div>
 
-  <!-- loads the main JavaScript (app logic, API calls, and UI behavior) -->
-  <!-- ?v=20260224-7 = a cache-buster so browsers fetch the newest file instead of using an old cached copy -->
-  <script src="assets/app.js?v=20260224-7"></script>
+  <!-- Load JS modules first, then app coordinator -->
+  <script src="assets/api.js?v=20260302-1"></script>
+  <script src="assets/ui.js?v=20260302-1"></script>
+  <script src="assets/modal.js?v=20260302-1"></script>
+  <script src="assets/app.js?v=20260302-1"></script>
 </body>
 </html>

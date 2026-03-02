@@ -47,11 +47,18 @@ Users can quickly find a breed, select it, and browse matching images in a galle
 
 ## Project Structure
 - `index.html` – Main app page
+- `assets/api.js` – API/fallback requests
+- `assets/ui.js` – UI rendering helpers
+- `assets/modal.js` – Modal and download behavior
 - `assets/app.js` – App logic and API calls
 - `assets/style.css` – App styling
 - `api/breeds.php` – Optional backend proxy for breeds
 - `api/images.php` – Optional backend proxy for images
 - `start.bat` – Local startup helper
+
+## Quick Run
+- Open `index.html` directly in your browser, or run `start.bat`.
+- No installation is required for normal use.
 
 ## Architecture / Data Flow
 1. Browser loads `index.html`, which includes `assets/style.css` and `assets/app.js`.
@@ -77,4 +84,6 @@ Users can quickly find a breed, select it, and browse matching images in a galle
 
 Public URL:
 https://Larisa-E.github.io/Dog_API/
+
+Anyone can open this URL and use the app without installing anything.
 

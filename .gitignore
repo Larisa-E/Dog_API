@@ -5,11 +5,15 @@ desktop.ini
 
 # Visual Studio / VS Code
 .vs/
+.vscode/
 *.user
 *.suo
 *.userosscache
 *.sln.docstates
 .vscode/.history/
+
+# Other editors
+.idea/
 
 # Build outputs (common)
 bin/

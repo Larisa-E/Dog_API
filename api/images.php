@@ -1,17 +1,15 @@
 <?php
-// Always return JSON to match frontend expectations.
+// always return JSON to match frontend expectations
 header("Content-Type: application/json");
 
-// Require a breed parameter from query string.
 if (!isset($_GET["breed"]) || empty($_GET["breed"])) {
     echo json_encode(["status" => "error", "message" => "Missing breed"]);
     exit;
 }
 
-// Encode user input safely before putting into URL.
 $breed = urlencode($_GET["breed"]);
 
-// Build endpoint with optional sub-breed support.
+// build endpoint with optional sub-breed support
 if (isset($_GET["subBreed"]) && !empty($_GET["subBreed"])) {
     $subBreed = urlencode($_GET["subBreed"]);
     $apiUrl = "https://dog.ceo/api/breed/$breed/$subBreed/images";
@@ -19,13 +17,18 @@ if (isset($_GET["subBreed"]) && !empty($_GET["subBreed"])) {
     $apiUrl = "https://dog.ceo/api/breed/$breed/images";
 }
 
-$response = file_get_contents($apiUrl);
+$context = stream_context_create([
+    "http" => [
+        "method" => "GET",
+        "timeout" => 8,
+    ],
+]);
 
-// Return error JSON if upstream call fails.
+$response = @file_get_contents($apiUrl, false, $context);
+
 if ($response === FALSE) {
     echo json_encode(["status" => "error", "message" => "Failed to fetch images"]);
     exit;
 }
 
-// Pass through successful Dog API response.
 echo $response;
