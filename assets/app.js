@@ -52,6 +52,7 @@ if (missingElements.length > 0) {
       modalDownload,
     });
 
+    updateBackgroundVisibility();
     loadBreeds();
     loadBackgroundCollage();
   });
@@ -66,6 +67,16 @@ if (missingElements.length > 0) {
     // Reset visible results area and related state.
     DogUI.clearGalleryState({ gallery, statusBox, loadMoreBtn });
     resetResultState();
+  }
+
+  function updateBackgroundVisibility() {
+    // No breed selected => collage visible. Breed selected => collage transparent.
+    if (!bgCollage) {
+      return;
+    }
+
+    const hasBreedSelection = Boolean(breedSelect.value);
+    bgCollage.classList.toggle("bg-collage--transparent", hasBreedSelection);
   }
 
   function applyBreedFilter() {
@@ -92,6 +103,7 @@ if (missingElements.length > 0) {
         allBreedNames = Object.keys(breedMap).sort();
         applyBreedFilter();
         DogUI.resetSubBreedOptions(subBreedSelect);
+        updateBackgroundVisibility();
         DogUI.showSpinner(spinner, false);
       } else {
         DogUI.showError(spinner, statusBox, "Failed to load breeds.");
@@ -195,12 +207,14 @@ if (missingElements.length > 0) {
     applyBreedFilter();
     DogUI.resetSubBreedOptions(subBreedSelect);
     clearGalleryState();
+    updateBackgroundVisibility();
   });
 
   breedSelect.addEventListener("change", async (event) => {
     // Breed change updates sub-breeds and loads images.
     const breed = event.target.value;
     clearGalleryState();
+    updateBackgroundVisibility();
 
     if (!breed) {
       DogUI.resetSubBreedOptions(subBreedSelect);

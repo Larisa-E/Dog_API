@@ -15,6 +15,12 @@ body {
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}
+
+.bg-collage.bg-collage--transparent {
+  opacity: 0.08;
 }
 
 .bg-collage__item {
