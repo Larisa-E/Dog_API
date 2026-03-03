@@ -1,5 +1,14 @@
 # Dog API Gallery
 
+## Demo
+![Dog API Gallery Demo](docs/demo%20(1).gif)
+
+## Live App
+Public URL:
+https://Larisa-E.github.io/Dog_API/
+
+Anyone can open this URL and use the app without installing anything.
+
 ## Project Overview
 Dog API Gallery is a responsive web application that lets users explore dog breeds and view images for each selected breed.
 
@@ -81,9 +90,4 @@ Users can quickly find a breed, select it, and browse matching images in a galle
 - `app.js` drives all interaction and API communication.
 - `api/breeds.php` and `api/images.php` are thin server-side pass-through endpoints to Dog API.
 - If PHP endpoints are unavailable (for example on GitHub Pages), the frontend automatically uses direct Dog API URLs.
-
-Public URL:
-https://Larisa-E.github.io/Dog_API/
-
-Anyone can open this URL and use the app without installing anything.
 
