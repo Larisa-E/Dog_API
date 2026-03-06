@@ -4,24 +4,19 @@
 ![Dog API Gallery Demo](docs/demo%20(1).gif)
 
 ## Live App
-Public URL:
 https://Larisa-E.github.io/Dog_API/
 
-Anyone can open this URL and use the app without installing anything.
+Anyone can open this link and use the app without installing anything.
 
-## Project Overview
-Dog API Gallery is a responsive web application that lets users explore dog breeds and view images for each selected breed.
+## Overview
+Dog API Gallery is a responsive web app where users can search dog breeds, select optional sub-breeds, and view matching images.
 
-The project was built to practice:
-- Working with a public API
-- Client-side development with JavaScript (`fetch` + JSON)
+This project was built to practice:
+- Public API integration
+- JavaScript interactivity (`fetch` + JSON)
 - Responsive UI design
-- Optional backend integration with PHP
-- Version control and documentation
-
-## Purpose
-This app demonstrates how to consume and display external API data in a user-friendly interface.
-Users can quickly find a breed, select it, and browse matching images in a gallery layout that works on desktop and mobile.
+- Optional PHP backend proxy
+- Documentation and version control
 
 ## Features
 - Fetches and lists all breeds from Dog API
@@ -33,17 +28,9 @@ Users can quickly find a breed, select it, and browse matching images in a galle
 - Error handling UI
 - Optional PHP proxy endpoints (`api/breeds.php`, `api/images.php`)
 
-## Core Requirements Covered
-- Uses Dog API as the main data source: https://dog.ceo/dog-api/
-- Uses AJAX requests (via `fetch`) without page reloads
-- Uses JSON responses from the API
-- Lets users select and browse dog breeds
-- Uses a responsive layout suitable for desktop and mobile
-
-## API Operations Implemented
-- List all breeds
-- List images by breed
-- List images by sub-breed
+## Quick Run
+- Open `index.html` directly in your browser, or run `start.bat`.
+- No installation is required for normal use.
 
 ## Technologies Used
 - HTML
@@ -54,40 +41,31 @@ Users can quickly find a breed, select it, and browse matching images in a galle
 - PHP (optional backend proxy)
 - Git
 
-## Project Structure
-- `index.html` – Main app page
-- `assets/api.js` – API/fallback requests
-- `assets/ui.js` – UI rendering helpers
-- `assets/modal.js` – Modal and download behavior
-- `assets/app.js` – App logic and API calls
-- `assets/style.css` – App styling
-- `api/breeds.php` – Optional backend proxy for breeds
-- `api/images.php` – Optional backend proxy for images
-- `start.bat` – Local startup helper
+## File Roles (Easy Guide)
 
-## Quick Run
-- Open `index.html` directly in your browser, or run `start.bat`.
-- No installation is required for normal use.
+### Main app
+- `index.html` — Page structure (search box, dropdowns, gallery, modal, buttons) and script/style imports.
+- `style.css` — All visual design: colors, layout, collage style, modal look, button styling.
+- `app.js` — Main controller: connects everything, handles user events, controls app state.
+- `api.js` — API layer: fetches breeds/images, handles fallback and timeout logic.
+- `ui.js` — UI helper layer: renders dropdowns, gallery items, status text, spinner/errors.
+- `modal.js` — Modal behavior: open/close image preview and download handling.
 
-## Architecture / Data Flow
-1. Browser loads `index.html`, which includes `assets/style.css` and `assets/app.js`.
-2. On page load, `app.js` calls:
-	- `loadBreeds()` to get breed data
-	- `loadBackgroundCollage()` to fetch random decorative images
-3. `loadBreeds()` uses `fetchJsonWithFallback()`:
-	- Primary: `api/breeds.php` (PHP proxy)
-	- Fallback: `https://dog.ceo/api/breeds/list/all`
-4. User selects breed/sub-breed, then `loadImagesForSelection()` runs.
-5. `loadImagesForSelection()` also uses `fetchJsonWithFallback()`:
-	- Primary: `api/images.php?breed=...&subBreed=...`
-	- Fallback: Dog API direct image endpoint
-6. Returned image URLs are stored in `currentImages`; `renderImages()` displays them in pages of 12 with `Load More`.
-7. Clicking a gallery image opens the modal; download tries blob download first and falls back to opening the image in a new tab.
+### Backend proxy (optional)
+- `breeds.php` — Returns breed list from Dog API (JSON).
+- `images.php` — Returns images for selected breed/sub-breed (JSON).
 
-## File Connection Summary
-- `index.html` defines all UI elements referenced by IDs in `app.js`.
-- `style.css` styles those same IDs/classes and visual components.
-- `app.js` drives all interaction and API communication.
-- `api/breeds.php` and `api/images.php` are thin server-side pass-through endpoints to Dog API.
-- If PHP endpoints are unavailable (for example on GitHub Pages), the frontend automatically uses direct Dog API URLs.
+## Request Flow (who calls who)
+1. User opens `index.html`
+2. `app.js` starts and asks `api.js` for data
+3. `api.js` calls `breeds.php` / `images.php` (or Dog API fallback)
+4. `ui.js` renders dropdowns, status, and gallery
+5. `modal.js` handles image preview and download
+
+## API Used
+- Dog CEO API: https://dog.ceo/dog-api/
+- Operations used:
+	- List all breeds
+	- List images by breed
+	- List images by sub-breed
 
